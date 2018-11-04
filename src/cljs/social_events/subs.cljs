@@ -11,3 +11,8 @@
  ::active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+  ::auth-details
+  (fn [db _]
+    (:auth db)))

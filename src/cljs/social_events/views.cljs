@@ -1,12 +1,13 @@
 (ns social-events.views
   (:require
    [re-frame.core :as re-frame]
-   [re-com.core :as re-com]
    [social-events.events :as events]
    [social-events.subs :as subs]))
 
 (defn bulma-home-panel []
  [:div {:class "is-centered-x-y"}
+  [:figure {:class "image is-128x128"}
+   [:img {:class "is-rounded" :src "assets/social-events.jpg"}]]
   [:section {:class "container" :style {:max-width "15%"}}
    [:h1 {:class "title is-3" :style {:text-align "center"}} "Welcome"]
    [:div {:class "field"}
@@ -63,16 +64,21 @@
   [:div {:class "is-centered-x-y"}
    [:div {:class "container"}
     [:div {:class "columns"}
+     [:div {:class "col-4 col-mx-auto"}
+      [:img {:class "img-responsive" :src "assets/social-events.jpg"}]]
+     [:div {:class "divider-vert" :data-content "LOGIN"}]
      [:div {:class "col-2 col-mx-auto"}
-      [:div {:class "form-group"}
+      [:div {:class "form-group" :style {:margin-top "30%"}}
        [:label {:class "form-label", :for "email-input"} "Name"]
        [:input {:class "form-input"
+                :on-change #(re-frame/dispatch [::events/update-auth-field :username (-> % .-target .-value)])
                 :type "email"
                 :id "email"
                 :placeholder "Email"}]
        [:label {:class "form-label"
                 :for "password-input"} "Password"]
        [:input {:class "form-input"
+                :on-change #(re-frame/dispatch [::events/update-auth-field :password (-> % .-target .-value)])
                 :type "password"
                 :id "password"
                 :placeholder "Password"}]]
@@ -81,34 +87,34 @@
             :href "#/spectre-about"} "Submit"]]]]]])
 
 (defn spectre-about-panel []
-  [:div {:class "container"}
-   [:div {:class "columns"}
-    [:div {:class "col-1"}
-     [:ul {:class "nav"}
-      [:li {:class "nav-item"}
-       [:a {:href "#/spectre-home"} "Elements"]]
-      [:li {:class "nav-item active"}
-       [:a {:href "#/spectre-home"} "Layout"]
+  (let [auth-details (re-frame/subscribe [::subs/auth-details])]
+    [:div {:class "container"}
+     [:div {:class "columns"}
+      [:div {:class "col-1"}
        [:ul {:class "nav"}
         [:li {:class "nav-item"}
-         [:a {:href "#/spectre-home"} "Flexbox grid"]]
+         [:a {:href "#/spectre-home"} "Elements"]]
+        [:li {:class "nav-item active"}
+         [:a {:href "#/spectre-home"} "Layout"]
+         [:ul {:class "nav"}
+          [:li {:class "nav-item"}
+           [:a {:href "#/spectre-home"} "Flexbox grid"]]
+          [:li {:class "nav-item"}
+           [:a {:href "#/spectre-home"} "Responsive"]]
+          [:li {:class "nav-item"}
+           [:a {:href "#/spectre-home"} "Navbar"]]
+          [:li {:class "nav-item"}
+           [:a {:href "#/spectre-home"} "Empty states"]]]]
         [:li {:class "nav-item"}
-         [:a {:href "#/spectre-home"} "Responsive"]]
+         [:a {:href "#/spectre-home"} "Components"]]
         [:li {:class "nav-item"}
-         [:a {:href "#/spectre-home"} "Navbar"]]
+         [:a {:href "#/spectre-home"} "Utilities"]]
         [:li {:class "nav-item"}
-         [:a {:href "#/spectre-home"} "Empty states"]]]]
-      [:li {:class "nav-item"}
-       [:a {:href "#/spectre-home"} "Components"]]
-      [:li {:class "nav-item"}
-       [:a {:href "#/spectre-home"} "Utilities"]]
-      [:li {:class "nav-item"}
-       [:a {:href "#/bulma-home"} "Bulma Home"]]
-      [:li {:class "nav-item"}
-       [:a {:href "#/bulma-about"} "Bulma About"]]]]
-    [:div {:class "col-11"}
-     [:h1 "Hello!"]]]])
-
+         [:a {:href "#/bulma-home"} "Bulma Home"]]
+        [:li {:class "nav-item"}
+         [:a {:href "#/bulma-about"} "Bulma About"]]]]
+      [:div {:class "col-11"}
+       [:h1 "Hello " (get @auth-details :username)]]]]))
 
 (defn- panels [panel-name]
   (case panel-name
@@ -116,10 +122,8 @@
     :spectre-about-panel [spectre-about-panel]
     :bulma-home-panel [bulma-home-panel]
     :bulma-about-panel [bulma-about-panel]
-    [:div]))
-
-(defn show-panel [panel-name]
-  [panels panel-name])
+    [:div {:class "is-centered-x-y"}
+     [:h1 "Error, No Panel!"]]))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]

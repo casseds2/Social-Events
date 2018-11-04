@@ -1,4 +1,4 @@
-## Investiagtion into a Hidden Gem
+## Investigation into a Hidden Gem
 
 > in my opinion if you have a secret compartment in your lute case and don't use it to hide things, there is something terribly, terribly wrong with you.
 
