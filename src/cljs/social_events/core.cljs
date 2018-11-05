@@ -5,9 +5,7 @@
    [social-events.events :as events]
    [social-events.routes :as routes]
    [social-events.views :as views]
-   [social-events.config :as config]
-   ))
-
+   [social-events.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
