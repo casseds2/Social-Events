@@ -7,7 +7,6 @@
    [goog.history.EventType :as EventType]
    [re-frame.core :as re-frame]
    [social-events.events :as events]))
-   
 
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -19,12 +18,9 @@
 
 (defn app-routes []
   (secretary/set-config! :prefix "#")
-  (defroute "/spectre-home" []
-    (re-frame/dispatch [::events/set-active-panel :spectre-home-panel]))
-  (defroute "/spectre-about" []
-    (re-frame/dispatch [::events/set-active-panel :spectre-about-panel])
-    (defroute "/bulma-home" []
-      (re-frame/dispatch [::events/set-active-panel :bulma-home-panel]))
-    (defroute "/bulma-about" []
-      (re-frame/dispatch [::events/set-active-panel :bulma-about-panel])))
+  (defroute "/" []
+      (re-frame/dispatch [::events/set-active-panel :home-screen]))
+  (defroute "/event/:id" [id]
+      (re-frame/dispatch [::events/set-selected-event id])
+      (re-frame/dispatch [::events/set-active-panel :event-screen]))
   (hook-browser-navigation!))

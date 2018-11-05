@@ -1,8 +1,10 @@
 (defproject social-events "0.1.0-SNAPSHOT"
+  :description "Social Events App For Everyone and Anyone!"
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
+                 [cljsjs/chartjs "2.7.0-0"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [secretary "1.2.3"]
                  [compojure "1.6.1"]
