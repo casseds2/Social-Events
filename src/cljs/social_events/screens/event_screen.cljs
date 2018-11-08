@@ -60,7 +60,7 @@
              (map-indexed (fn [index participant]
                             ^{:key index} [participant-item participant])
                           (:participants event)))]]])
-     [add-participant (:id event)]]))
+     [add-participant (:_id event)]]))
 
 (defn event-screen []
   (let [selected-event (subscribe [::subs/selected-event])]

@@ -4,14 +4,21 @@
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
+                 [day8.re-frame/http-fx "0.1.6"]
                  [cljsjs/chartjs "2.7.0-0"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [secretary "1.2.3"]
                  [compojure "1.6.1"]
                  [yogthos/config "0.8"]
-                 [ring "1.7.1"]]
+                 [ring "1.7.1"]
+                 [compojure "1.6.1"]
+                 [liberator "0.15.2"]
+                 [com.novemberain/monger "3.1.0"]
+                 [com.stuartsierra/component "0.3.2"]
+                 [org.clojure/tools.cli "0.3.5"]
+                 [aero "1.1.3"]]
 
-  :main social-events.server
+  :main social-events.core
 
   :plugins [[lein-cljsbuild "1.1.7"]]
 
@@ -25,7 +32,8 @@
                                     "test/js"]
 
   :figwheel {:css-dirs ["resources/public/css"]
-             :ring-handler social-events.handler/dev-handler}
+             :server-logfile false
+             :ring-handler social-events.handler/handler}
 
   :profiles
   {:dev
@@ -40,8 +48,8 @@
    :uberjar {:source-paths ["env/prod/clj"]
              :dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]
              :omit-source  true
-             :main         social-events.server
-             :aot          [social-events.server]
+             :main         social-events.core
+             :aot          [social-events.core]
              :uberjar-name "social-events.jar"
              :prep-tasks   ["compile" ["cljsbuild" "once" "min"]]}}
 

@@ -7,3 +7,5 @@ out
 .idea
 .vscode
 social-events.iml
+data
+.lein-repl-history
