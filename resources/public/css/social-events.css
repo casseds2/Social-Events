@@ -35,3 +35,11 @@
     max-height: 100%;
     overflow: auto;
 }
+
+.is-red {
+    background-color: red;
+}
+
+.is-blue {
+    background-color: blue;
+}

@@ -6,7 +6,7 @@
 
 # social-events
 
-Designed with Clojurescript, Clojure and Bulma / Spectre (I haven't decided yet) as an investigatory experiment into designing front-end clojure applications.
+Designed with Clojurescript, Clojure and Bulma as an investigatory experiment into designing front-end clojure applications.
 
 ## Development Mode
 

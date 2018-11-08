@@ -20,6 +20,10 @@
   (secretary/set-config! :prefix "#")
   (defroute "/" []
       (re-frame/dispatch [::events/set-active-panel :home-screen]))
+  (defroute "/about" []
+            (re-frame/dispatch [::events/set-active-panel :about-screen]))
+  (defroute "/create-event" []
+            (re-frame/dispatch [::events/set-active-panel :create-event-screen]))
   (defroute "/event/:id" [id]
       (re-frame/dispatch [::events/set-selected-event id])
       (re-frame/dispatch [::events/set-active-panel :event-screen]))
