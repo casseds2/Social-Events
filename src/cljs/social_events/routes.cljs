@@ -19,7 +19,8 @@
 (defn app-routes []
   (secretary/set-config! :prefix "#")
   (defroute "/" []
-      (re-frame/dispatch [::events/set-active-panel :home-screen]))
+      (re-frame/dispatch [::events/set-active-panel :home-screen])
+      (re-frame/dispatch [::events/fetch-events]))
   (defroute "/about" []
             (re-frame/dispatch [::events/set-active-panel :about-screen]))
   (defroute "/create-event" []

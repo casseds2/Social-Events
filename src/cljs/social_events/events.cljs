@@ -1,23 +1,16 @@
 (ns social-events.events
   (:require
-   [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
-   [social-events.db :as db]
+   [re-frame.core :refer [reg-event-db reg-event-fx dispatch]] [social-events.db :as db]
    [social-events.config :refer [api-url]]
    [day8.re-frame.http-fx]
    [day8.re-frame.async-flow-fx]
    [ajax.edn :refer [edn-request-format edn-response-format]]
    [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]))
 
-;; INITIAL BOOT DATA ;;
-(defn- load-initial-data []
-  {:first-dispatch [::fetch-events]
-   :rules [{:when :seen? :events ::fetch-events-success}]})
-
-(reg-event-fx
+(reg-event-db
  ::initialize-db
  (fn-traced [_ _]
-   {:db db/default-db
-    :async-flow (load-initial-data)}))
+   db/default-db))
 
 ;; HELPER EVENTS ;;
 (reg-event-db
@@ -82,13 +75,14 @@
 (reg-event-fx
   ::fetch-events
   (fn [{:keys [db]} _]
-    {:db (assoc-in db [:app-state :fetching-events?] true)
-      :http-xhrio {:method :get
-                   :uri (str api-url "/api/events")
-                   :timeout 8000
-                   :response-format (edn-response-format)
-                   :on-success [::fetch-events-success]
-                   :on-failure [::fetch-events-failure]}}))
+    (if (empty? (:events db))
+      {:db (assoc-in db [:app-state :fetching-events?] true)
+        :http-xhrio {:method :get
+                     :uri (str api-url "/api/events")
+                     :timeout 8000
+                     :response-format (edn-response-format)
+                     :on-success [::fetch-events-success]
+                     :on-failure [::fetch-events-failure]}})))
 
 (reg-event-fx
   ::fetch-event
