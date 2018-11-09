@@ -16,3 +16,18 @@
   ::selected-event
   (fn [db _]
     (:selected-event db)))
+
+(reg-sub
+  ::creating-event?
+  (fn [db _]
+    (get-in db [:app-state :creating-event?])))
+
+(reg-sub
+  ::fetching-events?
+  (fn [db _]
+    (get-in db [:app-state :fetching-events?])))
+
+(reg-sub
+  ::fetching-event?
+  (fn [db _]
+    (get-in db [:app-state :fetching-event?])))

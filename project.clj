@@ -4,6 +4,7 @@
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
+                 [day8.re-frame/async-flow-fx "0.0.11"]
                  [day8.re-frame/http-fx "0.1.6"]
                  [cljsjs/chartjs "2.7.0-0"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
@@ -33,7 +34,7 @@
 
   :figwheel {:css-dirs ["resources/public/css"]
              :server-logfile false
-             :ring-handler social-events.handler/handler}
+             :ring-handler social-events.handler/dev-handler}
 
   :profiles
   {:dev

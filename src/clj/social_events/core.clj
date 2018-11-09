@@ -6,8 +6,7 @@
     [social-events.mongodb :as mongodb]
     [social-events.web-server :as web-server]
     [clojure.tools.cli :as cli])
-  (:gen-class)
-  (:import (java.lang Thread$UncaughtExceptionHandler)))
+  (:gen-class))
 
 (def system nil)
 
@@ -24,8 +23,8 @@
 (defn stop []
   (info "Stopping Social Events")
   (if system
-    (alter-var-root #'system component/stop))
-  (error "System not initialised. Stop failed."))
+    (alter-var-root #'system component/stop)
+    (error "System not initialised. Stop failed.")))
 
 (defn start []
   (info "Starting Social Events")

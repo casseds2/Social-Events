@@ -46,3 +46,4 @@
            (map-indexed (fn [index event]
                           ^{:key index} [event-item index event])
                         @events))]]]]]))
+
