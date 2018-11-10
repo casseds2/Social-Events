@@ -10,21 +10,23 @@
 
 (def system nil)
 
-(defn- create-system [config-filename]
+(defn- create-system [config-path]
   (component/system-map
-    :config (config/map->Configuration {:config-filename config-filename})
+    :config (config/map->Configuration {:config-path config-path})
     :mongodb (component/using (mongodb/->Mongodb {}) [:config])
     :web-server (component/using (web-server/->WebServer {}) [:config :mongodb])))
 
-(defn- init [config-filename]
+(defn- init [config-path]
   (alter-var-root #'system (fn [_]
-                             (create-system config-filename))))
+                             (create-system config-path))))
 
 (defn stop []
   (info "Stopping Social Events")
-  (if system
-    (alter-var-root #'system component/stop)
-    (error "System not initialised. Stop failed.")))
+  (alter-var-root #'system
+                  (fn [sys]
+                    (if sys
+                      (component/stop sys)
+                      (error "System not initialised. Stop failed.")))))
 
 (defn start []
   (info "Starting Social Events")
@@ -38,9 +40,9 @@
 
 (defn add-shutdown-hook []
   (.addShutdownHook (Runtime/getRuntime)
-                    (Thread. ^Runnable (fn []
-                                         (info "Initiated shutdown")
-                                         (stop)))))
+                    (Thread. (fn []
+                               (do (info "Initiated shutdown")
+                                   (stop))))))
 
 (defn add-uncaught-exception-handler []
   (Thread/setDefaultUncaughtExceptionHandler
@@ -53,9 +55,15 @@
   [["-c" "--config-path CONFIG-PATH" "Path to config.edn"
     :default "resources/config.edn"]])
 
+(defn -start [this]
+  (add-shutdown-hook)
+  (start))
+
+(defn -stop [this]
+  (stop))
+
 (defn -main [& args]
   (add-uncaught-exception-handler)
-  (add-shutdown-hook)
   (try
     (let [{:keys [config-path]} (:options (cli/parse-opts args cli-options))]
       (init config-path)

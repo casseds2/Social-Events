@@ -19,12 +19,13 @@
         (throw (ex-info "Invalid configuration supplied" reason)))
       conformed)))
 
-(defrecord Configuration [config-filename
+(defrecord Configuration [config-path
                           web-server
                           mongodb]
   component/Lifecycle
   (start [component]
-    (let [config (-> (aero/read-config config-filename)
+    (info "Config Path" config-path)
+    (let [config (-> (aero/read-config config-path)
                      (conform ::config))]
       (info "Starting with config:\n"
             (with-out-str (pprint/pprint (select-keys config [:web-server :mongodb]))))
