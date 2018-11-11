@@ -1,5 +1,5 @@
 (ns social-events.handler
-  (:require [compojure.core :refer [GET POST PUT routes defroutes]]
+  (:require [compojure.core :refer [GET POST PUT DELETE routes defroutes]]
             [compojure.route :refer [resources]]
             [ring.util.response :refer [resource-response]]
             [ring.util.request :refer [body-string]]
@@ -8,7 +8,8 @@
             [social-events.resources.events :refer [fetch-events
                                                     fetch-event
                                                     create-event
-                                                    update-event]]))
+                                                    update-event
+                                                    delete-event]]))
 
 (defn wrap-header [app header value]
   (fn [request]
@@ -26,6 +27,12 @@
               (GET "/api/events/:id" [id] (fetch-event mongodb-connection id))
               (POST "/api/events" [] (create-event mongodb-connection))
               (PUT "/api/events/:id" [id] (update-event mongodb-connection id))
+              (DELETE "/api/events/:id" [id] (delete-event mongodb-connection id))
+              #_(GET "/api/posts" [] (fetch-posts mongodb-connection))
+              #_(GET "/api/posts/:id" [id] (fetch-post mongodb-connection id))
+              #_(POST "/api/posts" [] (create-post mongodb-connection))
+              #_(PUT "/api/posts/:id" [id] (update-post mongodb-connection id))
+              #_(DELETE "/api/posts/:id" [id] (delete-post mongodb-connection id))
               (resources "/"))
       (wrap-body-string)
       (wrap-header "Access-Control-Allow-Origin" "*")

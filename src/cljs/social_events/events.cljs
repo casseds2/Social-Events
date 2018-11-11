@@ -93,6 +93,19 @@
   (fn [{:keys [db]} [_ response]]
     {:db (assoc-in db [:app-state :updating-event?] false)}))
 
+(reg-event-fx
+  ::delete-event-success
+  (fn [{:keys [db]} [_ id response]]
+    (let [events (:events db)]
+      {:db (-> (assoc-in db [:app-state :deleting-event?] false)
+               (assoc :events (dissoc events id)))
+       ::navigate "/"})))
+
+(reg-event-fx
+  ::delete-event-failure
+  (fn [{:keys [db]} [_ response]]
+    {:db (assoc-in db [:app-state :deleting-event?] false)}))
+
 ;; HTTP EFFECTS ;;
 (reg-event-fx
   ::fetch-events
@@ -136,9 +149,21 @@
     {:db (assoc-in db [:app-state :updating-event?] true)
      :http-xhrio {:method :put
                   :uri (str api-url "/api/events/" id)
-                  :params value
+                  :params (dissoc value :_id)
                   :timeout 8000
                   :format (edn-request-format)
                   :response-format (edn-response-format)
                   :on-success [::update-event-success]
                   :on-failure [::update-event-failure]}}))
+
+(reg-event-fx
+  ::delete-event
+  (fn [{:keys [db]} [_ id]]
+    {:db (assoc-in db [:app-state :deleting-event?] true)
+     :http-xhrio {:method :delete
+                  :uri (str api-url "/api/events/" id)
+                  :timeout 8000
+                  :format (edn-request-format)
+                  :response-format (edn-response-format)
+                  :on-success [::delete-event-success id]
+                  :on-failure [::delete-event-failure]}}))

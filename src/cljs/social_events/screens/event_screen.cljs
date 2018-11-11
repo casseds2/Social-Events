@@ -6,8 +6,12 @@
     [social-events.events :as events]))
 
 (def page-state
-  (reagent/atom {:show-participants? false
+  (reagent/atom {:show-participants? true
+                 :show-delete-modal? false
                  :username ""}))
+
+(def delete-string
+  (reagent/atom ""))
 
 (defn- event-banner [event]
   [:section {:class "hero is-primary"}
@@ -27,6 +31,26 @@
   [:li
    [:h6 {:class "subtitle is-6"} member]])
 
+(defn- delete-modal [selected-event]
+  (let [{:keys [show-delete-modal?]} @page-state
+        {:keys [_id title]} selected-event
+        modal-class (if show-delete-modal? "modal is-active" "modal")]
+    [:div {:class modal-class}
+     [:div {:class "modal-background"
+            :on-click #(swap! page-state assoc :show-delete-modal? false)}]
+     [:div {:class "modal-content" :style {:text-align "center"}}
+      [:input {:class "input"
+               :type "text"
+               :placeholder "Event Name"
+               :on-change #(reset! delete-string (-> % .-target .-value))}]
+      [:a {:class "button is-danger"
+           :style {:margin-top "2%"}
+           :disabled (not= @delete-string title)
+           :on-click #(do (dispatch [::events/delete-event _id])
+                          (swap! page-state assoc :show-delete-modal? false))} "Delete"]]
+     [:button {:class "modal-close is-large"
+               :on-click #(swap! page-state assoc :show-delete-modal? false)}]]))
+
 (defn- add-participant [event-id]
   (let [{:keys [username]} @page-state]
     [:div
@@ -37,6 +61,7 @@
               :value (:username @page-state)
               :style {:padding "10px"}}]
      [:button {:class "button is-primary is-full-width"
+               :disabled (clojure.string/blank? username)
                :on-click #(do (swap! page-state assoc :username "")
                               (dispatch [::events/add-user-to-event event-id username]))} "Add"]]))
 
@@ -65,12 +90,15 @@
 (defn event-screen []
   (let [selected-event (subscribe [::subs/selected-event])]
     [:div {:class "container is-full-height" :style {:padding "5%"}}
+     [delete-modal @selected-event]
      [:div {:class "columns is-full-height"}
       [:div {:class "column is-9" :style {:max-width "100%"}}
        [:div {:class "is-full-height" :style {:background-color "#efefef"}}
         [event-banner @selected-event]
         [event-body @selected-event]]
        [:a {:class "button is-primary"
-            :href (str "/#/event/update/" (:_id @selected-event))} "Edit"]]
+            :href (str "/#/event/update/" (:_id @selected-event))} "Edit"]
+       [:button {:class "button is-danger"
+                 :on-click #(swap! page-state assoc :show-delete-modal? true)} "Delete"]]
       [:div {:class "column is-3"}
        [participants @selected-event]]]]))

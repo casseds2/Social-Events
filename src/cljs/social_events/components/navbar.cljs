@@ -19,8 +19,6 @@
            :href "/#/events"} "Events"]
       [:div {:class "navbar-dropdown"}
        [:a {:class "navbar-item"
-            :href "/#/about"} "My Events"]
-       [:a {:class "navbar-item"
             :href "/#/create-event"} "Create Event"]]]
      [:div {:class "navbar-item has-dropdown is-hoverable"}
       [:a {:class "navbar-link"} "Social"]

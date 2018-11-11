@@ -9,12 +9,22 @@
 (spec/def ::description string?)
 (spec/def ::creator string?)
 (spec/def ::date-string string?)
-(spec/def ::participants (spec/coll-of string?))
+(spec/def ::empty-vector empty?)
+(spec/def ::participants (or (spec/coll-of string?) ::empty-vector))
 (spec/def ::event (spec/keys :req-un [::title
                                       ::description
                                       ::creator
                                       ::date-string
                                       ::participants]))
+
+(defn extract-request-body [ctx]
+  (-> (get-in ctx [:request :body])
+      (clojure.edn/read-string)))
+
+(defn- malformed? [event]
+  (let [conformed (->> (clojure.edn/read-string event)
+                       (spec/conform ::event))]
+    (= ::spec/invalid conformed)))
 
 (defn- convert-id-to-string [doc]
   (assoc doc :_id (str (:_id doc))))
@@ -29,7 +39,7 @@
               (assoc coll id val))) {} docs))
 
 (defresource fetch-events [mongodb-connection]
-             :available-media-types ["application/edn" "application/json"]
+             :available-media-types ["application/edn"]
              :allowed-methods [:get]
              :handle-ok (fn [_]
                           (-> (mc/find-maps mongodb-connection "events")
@@ -37,23 +47,23 @@
                               (extract-id-as-key))))
 
 (defresource fetch-event [mongodb-connection id]
-             :available-media-types ["application/edn" "application/json"]
+             :available-media-types ["application/edn"]
              :allowed-methods [:get]
              :handle-ok (fn [_]
                           (-> (mc/find-map-by-id mongodb-connection "events" (ObjectId. id))
                               (convert-id-to-string))))
 
 (defresource create-event [mongodb-connection]
-             :available-media-types ["application/edn" "application/json"]
+             :available-media-types ["application/edn"]
              :allowed-methods [:post]
+             :malformed? #(malformed? (-> % :request :body))
              :post! (fn [ctx]
-                      (let [body (-> (get-in ctx [:request :body])
-                                     (clojure.edn/read-string))]
+                      (let [body (extract-request-body ctx)]
                         (->> (mc/insert-and-return mongodb-connection "events" body)
                              (convert-id-to-string)
                              (assoc ctx :result))))
-             :respond-with-entity? true
              :new? true
+             :respond-with-entity? true
              :handle-created (fn [ctx]
                                (let [response (:result ctx)]
                                  {(:_id response) response})))
@@ -61,14 +71,19 @@
 (defresource update-event [mongodb-connection id]
              :available-media-types ["application/edn"]
              :allowed-methods [:put]
+             :malformed? #(malformed? (-> % :request :body))
              :put! (fn [ctx]
-                     (let [body (-> (get-in ctx [:request :body])
-                                    (clojure.edn/read-string)
-                                    (dissoc :_id))]
+                     (let [body (extract-request-body ctx)]
                        (mc/update-by-id mongodb-connection "events" (ObjectId. id) body)))
-             :respond-with-entity? true
              :new? false
+             :respond-with-entity? true
              :handle-ok (fn [ctx]
                           (let [body (-> (get-in ctx [:request :body])
                                          (clojure.edn/read-string))]
-                            body)))
+                            (assoc body :_id id))))
+
+(defresource delete-event [mongodb-connection id]
+             :available-media-types ["application/edn"]
+             :allowed-methods [:delete]
+             :delete! (fn [_]
+                        (mc/remove-by-id mongodb-connection "events" (ObjectId. id))))

@@ -5,9 +5,9 @@
     [re-frame.core :refer [dispatch]]))
 
 (def form
-  (reagent/atom {:title "Christmas 2018"
-                 :description "A Christmas Party"
-                 :date-string "13/13/2018"
+  (reagent/atom {:title ""
+                 :description ""
+                 :date-string ""
                  :participants []
                  :creator "Stephen"}))
 

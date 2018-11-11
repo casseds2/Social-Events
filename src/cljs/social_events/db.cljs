@@ -6,6 +6,7 @@
                 :fetching-events? false
                 :fetching-event? false
                 :updating-event? false
+                :deleting-event? false
                 :fetched-all-events? false}
     :events {}
     :selected-event {}})
