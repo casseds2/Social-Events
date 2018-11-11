@@ -61,8 +61,6 @@
              :uberjar-name "social-events.jar"
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]}}
 
-  ;:repl {:plugins [[cider/cider-nrepl "0.18.0"]]}
-
   :cljsbuild
   {:builds
    [{:id "dev"

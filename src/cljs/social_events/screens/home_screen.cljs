@@ -28,22 +28,33 @@
                :href (str "/#/event/" id)
                :on-click #(dispatch [::events/set-selected-event id])} "View"]]]))
 
+(defn- events-table [events]
+  [:table {:class "table is-bordered is-hoverable is-fullwidth is-striped"}
+   [:thead
+    [:tr
+     [:th "Title"]
+     [:th "Date"]
+     [:th "Participants"]
+     [:th "Created By"]
+     [:th "Action"]]]
+   [:tbody
+    (doall
+      (map-indexed (fn [index event]
+                     ^{:key index} [event-item index event])
+                   @events))]])
+
+
 (defn home-screen []
   (let [events (subscribe [::subs/events])]
     [:div {:class "container is-full-height"}
      [:div {:class "columns is-full-height"}
       [:div {:class "column is-8 is-offset-2 is-vertically-and-horizontally-centered"}
-       [:table {:class "table is-bordered is-hoverable is-fullwidth is-striped"}
-        [:thead
-         [:tr
-          [:th "Title"]
-          [:th "Date"]
-          [:th "Participants"]
-          [:th "Created By"]
-          [:th "Action"]]]
-        [:tbody
-         (doall
-           (map-indexed (fn [index event]
-                          ^{:key index} [event-item index event])
-                        @events))]]]]]))
+       (if (empty? @events)
+         [:div {:class "tile is-12 is-horizontally-centered"}
+          [:div {:class "section"}
+           [:h1 {:class "title is-1 is-full-width"} "No Events!"]
+           [:a {:class "button is-primary is-horizontally-centered"
+                :href "/#/create-event"} "Create Event"]]]
+         [events-table events])]]]))
+
 

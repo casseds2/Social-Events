@@ -28,4 +28,7 @@
   (defroute "/event/:id" [id]
       (re-frame/dispatch [::events/set-selected-event id])
       (re-frame/dispatch [::events/set-active-panel :event-screen]))
+  (defroute "/event/update/:id" [id]
+            (re-frame/dispatch [::events/set-selected-event id])
+            (re-frame/dispatch [::events/set-active-panel :update-event-screen]))
   (hook-browser-navigation!))

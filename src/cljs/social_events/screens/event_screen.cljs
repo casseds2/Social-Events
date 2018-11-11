@@ -69,6 +69,8 @@
       [:div {:class "column is-9" :style {:max-width "100%"}}
        [:div {:class "is-full-height" :style {:background-color "#efefef"}}
         [event-banner @selected-event]
-        [event-body @selected-event]]]
+        [event-body @selected-event]]
+       [:a {:class "button is-primary"
+            :href (str "/#/event/update/" (:_id @selected-event))} "Edit"]]
       [:div {:class "column is-3"}
        [participants @selected-event]]]]))

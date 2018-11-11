@@ -20,7 +20,7 @@
   [:div {:class "media"}
    [:div {:class "media-content"}
     [:p {:class "title is-4"} "Stephen Cassedy"]
-    [:p {:class "subtitle is-6"} "I do this from the goodness of my heart and the shameless C.V. filler"]]])
+    [:p {:class "subtitle is-6"} "I do this from the goodness of my heart xo"]]])
 
 (defn- card-footer []
   [:div {:class "columns is-full-width"}

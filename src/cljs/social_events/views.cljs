@@ -5,6 +5,7 @@
    [social-events.screens.event-screen :refer [event-screen]]
    [social-events.screens.about-screen :refer [about-screen]]
    [social-events.screens.create-event-screen :refer [create-event-screen]]
+   [social-events.screens.update-event-screen :refer [update-event-screen]]
    [social-events.components.navbar :refer [navbar]]
    [social-events.subs :as subs]))
 
@@ -14,6 +15,7 @@
     :event-screen [event-screen]
     :about-screen [about-screen]
     :create-event-screen [create-event-screen]
+    :update-event-screen [update-event-screen]
     [:div {:class "is-centered-x-y"}
      [:h1 "Error, No Panel!"]]))
 
