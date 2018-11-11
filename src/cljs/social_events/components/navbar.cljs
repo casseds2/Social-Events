@@ -23,16 +23,11 @@
      [:div {:class "navbar-item has-dropdown is-hoverable"}
       [:a {:class "navbar-link"} "Social"]
       [:div {:class "navbar-dropdown"}
-       [:a {:class "navbar-item"} "Blog"]]]
+       [:a {:class "navbar-item"} "Blog"]
+       [:a {:class "navbar-item"} "Suggestion Box"]]]
      [:div {:class "navbar-item has-dropdown is-hoverable"}
       [:a {:class "navbar-link"} "About"]
       [:div {:class "navbar-dropdown"}
        [:a {:class "navbar-item"
             :href "/#/about"} "About"]
-       [:a {:class "navbar-item"} "Contribute"]]]]
-    [:div {:class "navbar-end"}
-     [:div {:class "navbar-item"}
-      [:div {:class "buttons"}
-       [:a {:class "button is-primary"}
-        [:strong "Sign up"]]
-       [:a {:class "button is-light"} "Log in"]]]]]])
+       [:a {:class "navbar-item"} "Contribute"]]]]]])
